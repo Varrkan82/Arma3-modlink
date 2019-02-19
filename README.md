@@ -1,5 +1,5 @@
 # ArmA3-modlink description
-This is a simple pseudographical SHELL tool to create the symbolic links of MODs from Steam Workshop directory to a directory with the ArmA dedicated server on Linux.
+This is a simple pseudographical SHELL tool to create the symbolic links of a selected MODs from Steam Workshop directory to a directory with the ArmA dedicated server on Linux.
 
 Currently - this script can only to create a symbolic links of MODs to your game server directory and to list and show an already present MODs in a game server directory.
 
