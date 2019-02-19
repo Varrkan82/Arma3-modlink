@@ -15,7 +15,7 @@ To remove an already linked MOD I recomend to proceed manually the following ste
 
 ## Usage
 ###### PRE
-Before using - please update variables in *modlink.sh* ``SRV_PATH`` and 
-``STEAM_DIR`` to your own.
+Before using - please update variables ``SRV_PATH`` and 
+``STEAM_DIR`` in *modlink.sh* to your own.
 #### How to use
 Just start the script - and you'll see all you need.
