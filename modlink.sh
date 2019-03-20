@@ -29,7 +29,7 @@ LICENSE
 # Variables
 DIALOG=${DIALOG=dialog}
 INSTALLED_LIST=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
-tempfile=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
+TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 
 SRV_PATH="${HOME}"/server/serverfiles
 STEAM_DIR="${HOME}"/mods/steam
@@ -44,7 +44,7 @@ for M_DIR in $(ls -1 ${STEAM_DIR} | grep -vE "*_old_*"); do
 	tr "[:upper:]" "[:lower:]" | \
 	sed -E 's/\s{1,}/_/g' | \
 	sed 's/^/\@/g')
-	MOD_ID=$(grep -h "publishedid" "${STEAM_DIR}"/"${M_DIR}"/meta.cpp | awk '{print $3}' | tr -d [:punct:])
+	MOD_ID=$(grep -h "publishedid" "${STEAM_DIR}"/"${M_DIR}"/meta.cpp | awk '{print $3}' | tr -d [:punct:] | tr -d '\015')
     fi
     # Check if MDO already linked to the game directory and write it to list
     if [[ -d "${SRV_PATH}"/${MOD_NAME} ]] || [[ -h "${SRV_PATH}"/${MOD_NAME} ]]; then
@@ -55,31 +55,32 @@ for M_DIR in $(ls -1 ${STEAM_DIR} | grep -vE "*_old_*"); do
 done
 
 # Construct pseudograpchicel interface
+
 $DIALOG --backtitle "Select MOD to connect" \
 	--keep-tite \
         --title "MOD selection" --clear \
-        --checklist "Selected MODs... " 70 70 25 \
-	$(cat ${INSTALLED_LIST}) 2>$tempfile
+        --checklist "Select MOD(s) (Removing impossible yet)... " 70 70 25 \
+	$(cat ${INSTALLED_LIST} | sort ) 2>$TMPFILE
 
 retval=$?
 
 # Find a switched off MODs
-choice_id_list="$(for name in $(cat ${tempfile}); do grep -v ON ${INSTALLED_LIST} | grep ${name} ${INSTALLED_LIST} | awk '{ print $2 }'; done)"
+choice_id_list=$(for name in $(cat ${TMPFILE}); do grep -v ON ${INSTALLED_LIST} | grep "^${name} " | awk '{ print $2 }'; done)
 
 case $retval in
   0)
     for mod_id in ${choice_id_list[@]}; do
-	for name in $(grep ${mod_id%$'\r'} $INSTALLED_LIST | awk '{ print $1 }'); do
-	    if [[ -d "${SRV_PATH}"/${name%$'\r'} ]] || [[ -h "${SRV_PATH}"/${name%$'\r'} ]]; then
+	for name in $(grep ${mod_id} $INSTALLED_LIST | awk '{ print $1 }'); do
+	    if [[ -d "${SRV_PATH}"/"${name}" ]] || [[ -h "${SRV_PATH}"/"${name}" ]]; then
 		continue
 	    else
 		# Link MOD's Steam path to Server directory by its name
-		ln -s ${STEAM_DIR}/${mod_id%$'\r'} "${SRV_PATH}"/${name%$'\r'} 2>/dev/null
+		ln -s "${STEAM_DIR}"/"${mod_id}" "${SRV_PATH}"/"${name}" 2>/dev/null
 		# Check for a "key/keys" directory in a linked MOD's directory and create symbolic links for all keys in it to a server's "keys" directory
-		if [[ -d "${SRV_PATH}"/${name%$'\r'}/keys ]]; then
-		    ln -s "${SRV_PATH}"/${name%$'\r'}/keys/* "${SRV_PATH}"/keys/ 2>/dev/null
-		elif [[ -d "${SRV_PATH}"/${name%$'\r'}/key ]]; then
-		    ln -s "${SRV_PATH}"/${name%$'\r'}/key/* "${SRV_PATH}"/keys/ 2>/dev/null
+		if [[ -d "${SRV_PATH}"/"${name}"/keys ]]; then
+		    ln -s "${SRV_PATH}"/"${name}"/keys/* "${SRV_PATH}"/keys/ 2>/dev/null
+		elif [[ -d "${SRV_PATH}"/"${name}"/key ]]; then
+		    ln -s "${SRV_PATH}"/"${name}"/key/* "${SRV_PATH}"/keys/ 2>/dev/null
 		else
 		    continue
 		fi
