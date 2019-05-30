@@ -31,7 +31,11 @@ DIALOG=${DIALOG=dialog}
 INSTALLED_LIST=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 
-SRV_PATH="${HOME}"/server/serverfiles
+if [[ -z "$1" ]]; then
+    SRV_PATH="${HOME}"/server/serverfiles
+else
+    SRV_PATH="${HOME}"/"$1"/serverfiles
+fi
 STEAM_DIR="${HOME}"/mods/steam
 
 # Get MODs list from Steam directory
@@ -54,7 +58,7 @@ for M_DIR in $(ls -1 ${STEAM_DIR} | grep -vE "*_old_*"); do
     fi
 done
 
-# Construct pseudograpchicel interface
+# Construct pseudograpchical interface
 
 $DIALOG --backtitle "Select MOD to connect" \
 	--keep-tite \
