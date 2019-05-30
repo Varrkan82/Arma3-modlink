@@ -65,7 +65,7 @@ done
 $DIALOG --backtitle "Select MOD to connect, remove selection to remove MOD" \
 	--keep-tite \
         --title "MOD selection" --clear \
-        --checklist "Select MOD(s) or remove selection to remove MOD" 70 70 25 \
+        --checklist "Select MOD(s) to connect it in game. Remove selection to remove MOD" 80 80 30 \
 	$(cat ${INSTALLED_LIST} | sort ) 2>$TMPFILE
 
 retval=$?
