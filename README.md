@@ -13,7 +13,7 @@ It also can add an enabled mods to the commandline parameter "mods=" in LGSM ser
 
 ## Usage
 ###### PRE
-Before using - please update variables ``SRV_PATH`` and 
+Before using - please update variables ``DEF_SRV`` and 
 ``STEAM_DIR`` in *modlink.sh* to your own.
 #### How to use
 The default server name is "server" which is located in "/home/$USER" directory. The other server name could be passed as a startup argument for a script.
