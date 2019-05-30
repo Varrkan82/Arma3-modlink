@@ -62,10 +62,10 @@ done
 
 # Construct pseudograpchical interface
 
-$DIALOG --backtitle "Select MOD to connect" \
+$DIALOG --backtitle "Select MOD to connect, remove selection to remove MOD" \
 	--keep-tite \
         --title "MOD selection" --clear \
-        --checklist "Select MOD(s)" 70 70 25 \
+        --checklist "Select MOD(s) or remove selection to remove MOD" 70 70 25 \
 	$(cat ${INSTALLED_LIST} | sort ) 2>$TMPFILE
 
 retval=$?
