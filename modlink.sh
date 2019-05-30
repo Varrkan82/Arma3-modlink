@@ -33,7 +33,7 @@ TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 
 if [[ -z "$1" ]]; then
     SRV_PATH="${HOME}"/server/serverfiles
-    LGSM_CFG="${HOME}"/lgsm/config-lgsm/arma3server
+    LGSM_CFG="${HOME}"/server/lgsm/config-lgsm/arma3server
 else
     SRV_PATH="${HOME}"/"$1"/serverfiles
     LGSM_CFG="${HOME}"/"$1"/lgsm/config-lgsm/arma3server
