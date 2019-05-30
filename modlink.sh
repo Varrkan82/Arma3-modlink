@@ -36,7 +36,7 @@ if [[ -z "$1" ]]; then
 else
     SRV_PATH="${HOME}"/"$1"/serverfiles
 fi
-STEAM_DIR="${HOME}"/mods/steam
+STEAM_DIR="${HOME}"/Steam/steamapps/workshop/content/107410
 
 # Get MODs list from Steam directory
 for M_DIR in $(ls -1 ${STEAM_DIR} | grep -vE "*_old_*"); do
