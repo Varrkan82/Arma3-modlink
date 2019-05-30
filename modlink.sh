@@ -31,6 +31,7 @@ DIALOG=${DIALOG=dialog}
 INSTALLED_LIST=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 DEF_SRV="server"
+STEAM_DIR="${HOME}"/Steam/steamapps/workshop/content/107410
 
 if [[ -z "$1" ]]; then
     SRV_PATH="${HOME}"/"${DEF_SRV}"/serverfiles
@@ -39,7 +40,17 @@ else
     SRV_PATH="${HOME}"/"$1"/serverfiles
     LGSM_CFG="${HOME}"/"$1"/lgsm/config-lgsm/arma3server
 fi
-STEAM_DIR="${HOME}"/Steam/steamapps/workshop/content/107410
+
+# Check for a "key/keys" directory in a linked MOD's directory and create symbolic links for all keys in it to a server's "keys" directory
+linkkeys() {
+    if [[ -d "${SRV_PATH}"/"${name}"/keys ]]; then
+	ln -s "${SRV_PATH}"/"${name}"/keys/* "${SRV_PATH}"/keys/ 2>/dev/null
+    elif [[ -d "${SRV_PATH}"/"${name}"/key ]]; then
+	ln -s "${SRV_PATH}"/"${name}"/key/* "${SRV_PATH}"/keys/ 2>/dev/null
+    else
+	continue
+    fi
+}
 
 # Get MODs list from Steam directory
 for M_DIR in $(ls -1 ${STEAM_DIR} | grep -vE "*_old_*"); do
@@ -77,8 +88,8 @@ choice_id_list=$(for name in $(cat ${TMPFILE}); do cat ${INSTALLED_LIST} | grep 
 case $retval in
   0)
     mods=""
-    find "${SRV_PATH}" -maxdepth 1 -name '@*' -type l -delete
-    find "${SRV_PATH}/keys" -maxdepth 1 -type l -delete
+    find "${SRV_PATH}/" -maxdepth 1 -name '@*' -type l -delete
+    find "${SRV_PATH}/keys/" -maxdepth 1 -type l -delete
     for mod_id in ${choice_id_list[@]}; do
 	for name in $(grep ${mod_id} $INSTALLED_LIST | awk '{ print $1 }'); do
 	    if [[ -z $mods ]]; then
@@ -87,22 +98,17 @@ case $retval in
 		 mods="${mods}\\\;${name}"
 	    fi
 	    if [[ -d "${SRV_PATH}"/"${name}" ]] || [[ -h "${SRV_PATH}"/"${name}" ]]; then
+		linkkeys
 		continue
 	    else
 		# Link MOD's Steam path to Server directory by its name
 		ln -s "${STEAM_DIR}"/"${mod_id}" "${SRV_PATH}"/"${name}" 2>/dev/null
-		# Check for a "key/keys" directory in a linked MOD's directory and create symbolic links for all keys in it to a server's "keys" directory
-		if [[ -d "${SRV_PATH}"/"${name}"/keys ]]; then
-		    ln -s "${SRV_PATH}"/"${name}"/keys/* "${SRV_PATH}"/keys/ 2>/dev/null
-		elif [[ -d "${SRV_PATH}"/"${name}"/key ]]; then
-		    ln -s "${SRV_PATH}"/"${name}"/key/* "${SRV_PATH}"/keys/ 2>/dev/null
-		else
-		    continue
-		fi
+		linkkeys
 	    fi
 	done
     done
     find "${LGSM_CFG}" -maxdepth 1 -type f -name 'arma3server*.cfg' -exec sed -i s/^mods=.*$/mods=\"${mods}\"/g {} \;
+    clear
     ;;
   1)
     echo "Canceled."
@@ -115,4 +121,3 @@ case $retval in
 esac
 
 exit 0
-
