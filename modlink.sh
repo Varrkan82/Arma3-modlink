@@ -62,6 +62,7 @@ for M_DIR in $(ls -1 ${STEAM_DIR} | grep -vE "*_old_*"); do
 	tr "[:upper:]" "[:lower:]" | \
 	sed -E 's/\s{1,}/_/g' | \
 	sed 's/^/\@/g')
+	if [[ -n ${MOD_NAME} ]]; then true; else MOD_NAME='NO_NAME_is_DEFINED'; fi
 	MOD_ID=$(grep -h "publishedid" "${STEAM_DIR}"/"${M_DIR}"/meta.cpp | awk '{print $3}' | tr -d [:punct:] | tr -d '\015')
     fi
     # Check if MDO already linked to the game directory and write it to list
