@@ -121,4 +121,6 @@ case $retval in
     ;;
 esac
 
+rm ${TMPFILE} ${INSTALLED_LIST} &>/dev/null
+
 exit 0
