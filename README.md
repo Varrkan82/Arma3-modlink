@@ -1,6 +1,6 @@
 # ArmA3-modlink description
-This tool created to work with LGSM tool! \
-\
+This tool is created to work with LGSM tool!
+
 This is a simple pseudographical SHELL tool to create/remove the symbolic links of a selected MODs from Steam Workshop directory to a directory with the ArmA dedicated server on Linux.\
 It is creates the symbolyc links of an all files in a "keys" directory of a linked MOD to your server's "keys" directory. And it can remove these links if mod removed from server path (with the current tool by unmarking the mod in list).
 
@@ -24,4 +24,3 @@ You can select the server where the mods you need to link to in a first step. An
 Use and arrows on your keyboadr to navigate and the SPACE key to select/unselect a punct under your cursor position.
 
 ```./modlink.sh```
-
