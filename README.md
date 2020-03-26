@@ -23,4 +23,9 @@ You can select the server where the mods you need to link to in a first step. An
 
 Use and arrows on your keyboadr to navigate and the SPACE key to select/unselect a punct under your cursor position.
 
-```./modlink.sh```
+```
+mkdir modlink
+cd modlink
+git clone https://github.com/Varrkan82/ArmA3-modlink.git .
+./modlink.sh
+```
