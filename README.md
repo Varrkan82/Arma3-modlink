@@ -15,12 +15,13 @@ It also can add an enabled mods to the commandline parameter "mods=" in LGSM ser
 ###### PRE
 Before using - please update a ``STEAM_DIR`` variable in *modlink.sh* to your own.
 #### How to use
-The default server name is "server" which is located in "/home/$USER" directory. All other server directories should start with the "server" string to be included in a list of servers for choosing.\
-Just start the script - and you'll see all you need.\
+The default server name is "server" which is located in "/home/$USER" directory. All other server directories should start with the "server" string to be included in a list of servers for choosing.
 
-You can select the server where the mods you need to link to in a first step. And the MODs which you need to link/unlink in the second step.\
+Just start the script - and you'll see all you need.
+
+You can select the server where the mods you need to link to in a first step. And the MODs which you need to link/unlink in the second step.
 
 Use and arrows on your keyboadr to navigate and the SPACE key to select/unselect a punct under your cursor position.
 
-```./modlink.sh```\
+```./modlink.sh```
 
