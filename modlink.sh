@@ -26,20 +26,65 @@ SOFTWARE.
 
 LICENSE
 
+if [[ ! -z "$1" ]]; then
+    echo "Just run it! :)"
+    exit 99
+fi
+
 # Variables
 DIALOG=${DIALOG=dialog}
 INSTALLED_LIST=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 DEF_SRV="server"
+if [[ ! -d "${DEF_SRV}" ]]; then
+    echo -e "ERROR: No correct server PATH found for servername \"${DEF_SRV}\".\nPlease, update DEF_SRV variable inside the script to set a correct server PATH and run the script again.\n"
+    exit 2
+fi
 STEAM_DIR="${HOME}"/Steam/steamapps/workshop/content/107410
 
-if [[ -z "$1" ]]; then
-    SRV_PATH="${HOME}"/"${DEF_SRV}"/serverfiles
-    LGSM_CFG="${HOME}"/"${DEF_SRV}"/lgsm/config-lgsm/arma3server
-else
-    SRV_PATH="${HOME}"/"$1"/serverfiles
-    LGSM_CFG="${HOME}"/"$1"/lgsm/config-lgsm/arma3server
-fi
+SERVERS_LIST() {
+    for server in ${HOME}/server*; do
+	SRV=$(echo ${server} | cut -d '/' -f 4)
+	SRV_NAME=${SRV}
+	if [[ ${SRV} = ${DEF_SRV} ]]; then
+	    echo "${SRV} $SRV_NAME ON"
+	else
+	    echo "${SRV} $SRV_NAME off"
+	fi
+    done
+}
+
+
+echo ${SERVER_LIST}
+
+$DIALOG --backtitle "" \
+	--keep-tite \
+	--keep-window \
+        --title "Select Server to link MODs" --clear \
+        --radiolist "Link to... " 20 50 30 \
+	$(SERVERS_LIST) 2>$TMPFILE
+
+retval=$?
+srv_choice=$(cat ${TMPFILE})
+
+case $retval in
+  0)
+    DEF_SRV=$srv_choice
+    ;;
+  1)
+    echo "Canceled."
+    exit 1
+    ;;
+  255)
+    echo "ESC key is pressed."
+    exit 1
+    ;;
+esac
+
+SRV_PATH=${HOME}/${DEF_SRV}/serverfiles
+LGSM_CFG=${HOME}/${DEF_SRV}/lgsm/config-lgsm/arma3server
+
+
 
 # Check for a "key/keys" directory in a linked MOD's directory and create symbolic links for all keys in it to a server's "keys" directory
 linkkeys() {
@@ -64,8 +109,11 @@ for M_DIR in $(ls -1 ${STEAM_DIR} | grep -vE "*_old_*"); do
 	sed 's/^/\@/g')
 	if [[ -n ${MOD_NAME} ]]; then true; else MOD_NAME='NO_NAME_is_DEFINED'; fi
 	MOD_ID=$(grep -h "publishedid" "${STEAM_DIR}"/"${M_DIR}"/meta.cpp | awk '{print $3}' | tr -d [:punct:] | tr -d '\015')
+	if [[ ${MOD_ID} = "1998821941" ]]; then
+	    MOD_NAME="$(echo ${MOD_NAME} | sed 's/^\@/\@00-/g')"
+	fi
     fi
-    # Check if MDO already linked to the game directory and write it to list
+    # Check if MOD is already linked into the game directory and write it to the list
     if [[ -d "${SRV_PATH}"/${MOD_NAME} ]] || [[ -h "${SRV_PATH}"/${MOD_NAME} ]]; then
 	echo -e "${MOD_NAME} ${MOD_ID} ON" >>${INSTALLED_LIST}
     else
@@ -74,11 +122,11 @@ for M_DIR in $(ls -1 ${STEAM_DIR} | grep -vE "*_old_*"); do
 done
 
 # Construct pseudograpchical interface
-
-$DIALOG --backtitle "Select MOD to connect, remove selection to remove MOD" \
+$DIALOG --backtitle "" \
 	--keep-tite \
+	--keep-window \
         --title "MOD selection" --clear \
-        --checklist "Select MOD(s) to connect it in game. Remove selection to remove MOD" 80 80 30 \
+        --checklist "Select MOD(s) to connect it in game. Remove selection to remove MOD" 80 80 50 \
 	$(cat ${INSTALLED_LIST} | sort ) 2>$TMPFILE
 
 retval=$?
