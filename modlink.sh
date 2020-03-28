@@ -35,8 +35,8 @@ fi
 DIALOG=${DIALOG=dialog}
 INSTALLED_LIST=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
-DEF_SRV="server"
-if [[ ! -d "${DEF_SRV}" ]]; then
+DEF_SRV="server_hosting"
+if [[ ! -d "${HOME}/${DEF_SRV}" ]]; then
     echo -e "ERROR: No correct server PATH found for servername \"${DEF_SRV}\".\nPlease, update DEF_SRV variable inside the script to set a correct server PATH and run the script again.\n"
     exit 2
 fi
