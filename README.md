@@ -24,7 +24,7 @@ The default server name is "server" which is located in "/home/$USER" directory.
 
 Just start the script - and you'll see all you need.
 
-You can select the server where the mods you need to link to in a first step. And the MODs which you need to link/unlink in the second step.
+You can select the server you want to link a MODs to in a first step. And the MODs which you're need to link/unlink in the second step.
 
 Use and arrows on your keyboadr to navigate and the SPACE key to select/unselect a punct under your cursor position.
 
