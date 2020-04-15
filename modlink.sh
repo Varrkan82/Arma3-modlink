@@ -32,6 +32,7 @@ if [[ ! -z "$1" ]]; then
 fi
 
 # Variables
+ARMA_PATH=server
 DIALOG=${DIALOG=dialog}
 INSTALLED_LIST=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
@@ -43,7 +44,7 @@ fi
 STEAM_DIR="${HOME}"/Steam/steamapps/workshop/content/107410
 
 SERVERS_LIST() {
-    for server in ${HOME}/server*; do
+    for server in ${HOME}/${ARMA_PATH}*; do
 	SRV=$(echo ${server} | cut -d '/' -f 4)
 	SRV_NAME=${SRV}
 	if [[ ${SRV} = ${DEF_SRV} ]]; then

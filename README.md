@@ -13,7 +13,12 @@ It also can add an enabled mods to the commandline parameter "mods=" in LGSM ser
 
 ## Usage
 ###### PRE
-Before using - please update a ``STEAM_DIR`` variable in *modlink.sh* to your own.
+Before using - please update a following variables for your own:
+
+``STEAM_DIR`` - this is a path to your Steam directory with a mods.
+
+``ARMA_PATH`` - default server path name in your home directory. (*/home/steam/server* by default).
+
 #### How to use
 The default server name is "server" which is located in "/home/$USER" directory. All other server directories should start with the "server" string to be included in a list of servers for choosing.
 
