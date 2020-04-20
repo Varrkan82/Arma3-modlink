@@ -13,6 +13,9 @@ It also can add an enabled mods to the commandline parameter "mods=" in LGSM ser
 
 ## Usage
 ###### PRE
+
+``mods=""`` variable should present and to be uncommented and empty in */home/steam/server/lgsm/config-lgsm/arma3server/arma3server.cfg* file (the same thing for any other server).
+
 Before using - please update a following variables for your own:
 
 ``STEAM_DIR`` - this is a path to your Steam directory with a mods.
