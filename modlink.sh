@@ -32,7 +32,7 @@ if [[ -z "$(which dialog)" ]]; then
   echo "Missing 'dialog'! Please, run 'apt install -y dialog' to install it."
   exit 1
 elif [[ -z "$(which xmlstarlet)" ]]; then
-  echo "Missing 'xmlstarlet'! Please 'apt install -y xmlstarlet' to install it."
+  echo "Missing 'xmlstarlet'! Please, run 'apt install -y xmlstarlet' to install it."
   exit 1
 fi
 
@@ -193,14 +193,14 @@ while true; do
       --no-tags \
       --radiolist "Select action." 10 50 2 \
       "1" "Unselect all MODs" ON \
-      "2" "Select XML file with mod compilation" off 2>${TMPFILE}
+      "2" "Select HTML file with mod compilation" off 2>${TMPFILE}
     value=$?
     case $value in
     0)
       if [[ $(cat ${TMPFILE}) = 1 ]]; then
         sed -i 's/ON/off/g' ${INSTALLED_LIST}
       elif [[ $(cat ${TMPFILE}) = 2 ]]; then
-        FILE_LIST=($(for item in xml/*.xml; do echo "${item} $(basename ${item}) off"; done))
+        FILE_LIST=($(for item in html/*.html; do echo "${item} $(basename ${item}) off"; done))
         MOD_COMPILATION=$($DIALOG --keep-tite \
           --keep-window \
           --title "Select file:" \
@@ -213,7 +213,7 @@ while true; do
         case $fselectval in
         0)
           sed -i 's/ON/off/g' ${INSTALLED_LIST}
-          LIST=$(xmlstarlet sel -T -t -v "html/body/div/table/tr/td/a" ${MOD_COMPILATION} | awk -F= '{  print $2 }')
+          LIST=$(xmlstarlet sel -T -t -v "  html/body/div/table/tr/td/a" ${MOD_COMPILATION} | awk -F= '{  print $2 }')
           for id in ${LIST[@]}; do
             sed -i "s/${id} off/${id} ON/g" ${INSTALLED_LIST}
           done

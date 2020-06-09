@@ -9,6 +9,7 @@ It also can add an enabled mods to the commandline parameter "mods=" in LGSM ser
 ## Dependencies
 
 * dialog
+* xmlstarlet
 * LGSM Tool (https://linuxgsm.com/)
 
 ## Usage
@@ -31,13 +32,13 @@ You can select the server you want to link a MODs to in a first step. And the MO
 
 Use and arrows on your keyboard to navigate and the SPACE key to select/unselect a punct under your cursor position.
 
-Added: option to remove selection from all mods.
+**Added:** option to remove selection from all mods.
 
-Added: option to load mod compilation from XML file, saved from ArmA Launcher.
+**Added:** option to load mod compilation from HTMP file, saved from ArmA Launcher.
 
 Use "More actions" button on a MOD selection screen.
 
-Place your mod compilation file into ``xml`` folder to see it in file selection dialog.
+Place your mod compilation file into ``html`` folder to see it in file selection dialog.
 
 ```
 mkdir modlink
