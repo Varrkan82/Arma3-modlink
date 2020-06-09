@@ -21,7 +21,9 @@ Before using - please update a following variables for your own:
 
 ``STEAM_DIR`` - this is a path to your Steam directory with a mods.
 
-``ARMA_PATH`` - default server path name in your home directory. (*/home/steam/server* by default).
+``ARMASERVER_PATH`` - default server path name in your home directory. (*/home/$USER/server* by default).
+
+``SELECTED_SERVER`` - default selected server in ``Server selection`` window (*ARMASERVER_PATH* by default).
 
 #### How to use
 The default server name is "server" which is located in "/home/$USER" directory. All other server directories should start with the "server" string to be included in a list of servers for choosing.

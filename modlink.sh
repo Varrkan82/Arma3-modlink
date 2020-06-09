@@ -43,16 +43,14 @@ if [[ ! -z "$1" ]]; then
 fi
 
 # Variables
-ARMA_PATH=server
+ARMASERVER_PATH=
+SELECTED_SERVER=
+ARMA_PATH="${ARMASERVER_PATH:-server}"
+DEF_SRV="${SELECTED_SERVER:-${ARMA_PATH}}"
 DIALOG=${DIALOG=dialog}
 INSTALLED_LIST=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 trap cleanup 0 1 2 6 15
-DEF_SRV="server_x64"
-if [[ ! -d "${HOME}/${DEF_SRV}" ]]; then
-  echo -e "ERROR: No correct server PATH found for servername \"${DEF_SRV}\".\nPlease, update DEF_SRV variable inside the script to set a correct server PATH and run the script again.\n"
-  exit 2
-fi
 STEAM_DIR="${HOME}"/Steam/steamapps/workshop/content/107410
 
 cleanup() {
@@ -76,6 +74,7 @@ echo ${SERVER_LIST}
 $DIALOG --backtitle "" \
   --keep-tite \
   --keep-window \
+  --no-tags \
   --title "Select Server to link MODs" --clear \
   --radiolist "Link to... " 20 50 30 \
   $(SERVERS_LIST) 2>$TMPFILE
