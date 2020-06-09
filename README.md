@@ -36,6 +36,8 @@ Added: option to load mod compilation from XML file, saved from ArmA Launcher.
 
 Use "More actions" button on a MOD selection screen.
 
+Place your mod compilation file into ``xml`` folder to see it in file selection dialog.
+
 ```
 mkdir modlink
 cd modlink
