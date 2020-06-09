@@ -29,7 +29,12 @@ Just start the script - and you'll see all you need.
 
 You can select the server you want to link a MODs to in a first step. And the MODs which you're need to link/unlink in the second step.
 
-Use and arrows on your keyboadr to navigate and the SPACE key to select/unselect a punct under your cursor position.
+Use and arrows on your keyboard to navigate and the SPACE key to select/unselect a punct under your cursor position.
+
+Added: option to remove selection from all mods.
+Added: option to load mod compilation from XML file, saved from ArmA Launcher.
+
+Use "More actions" button on a MOD selection screen.
 
 ```
 mkdir modlink

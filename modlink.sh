@@ -26,6 +26,8 @@ SOFTWARE.
 
 LICENSE
 
+LC_ALL=C
+
 if [[ -z "$(which dialog)" ]]; then
   echo "Missing 'dialog'! Please, run 'apt install -y dialog' to install it."
   exit 1
@@ -45,14 +47,17 @@ ARMA_PATH=server
 DIALOG=${DIALOG=dialog}
 INSTALLED_LIST=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
-trap "rm -f $TMPFILE" 0 1 2 6 15
-trap "rm -f $INSTALLED_LIST" 0 1 2 6 15
+trap cleanup 0 1 2 6 15
 DEF_SRV="server_x64"
 if [[ ! -d "${HOME}/${DEF_SRV}" ]]; then
   echo -e "ERROR: No correct server PATH found for servername \"${DEF_SRV}\".\nPlease, update DEF_SRV variable inside the script to set a correct server PATH and run the script again.\n"
   exit 2
 fi
 STEAM_DIR="${HOME}"/Steam/steamapps/workshop/content/107410
+
+cleanup() {
+  rm -f $TMPFILE $INSTALLED_LIST
+}
 
 SERVERS_LIST() {
   for server in ${HOME}/${ARMA_PATH}*; do
@@ -102,7 +107,7 @@ linkkeys() {
   elif [[ -d "${SRV_PATH}"/@"${name}"/key ]]; then
     ln -s "${SRV_PATH}"/@"${name}"/key/* "${SRV_PATH}"/keys/ 2>/dev/null
   else
-    continue
+    return
   fi
 }
 
@@ -138,7 +143,7 @@ modsel() {
     --extra-button \
     --extra-label "More actions" \
     --checklist "Select MOD(s) to connect it in game. Remove selection to remove MOD" 80 80 50 \
-    $(cat ${INSTALLED_LIST} | sort) 2>$TMPFILE
+    $(sort ${INSTALLED_LIST}) 2>$TMPFILE
 
   retval=$?
 
@@ -181,8 +186,6 @@ while true; do
     exit 1
     ;;
   3)
-    TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
-    trap "rm -f $TMPFILE" 0 1 2 6 15
     $DIALOG --keep-tite \
       --keep-window \
       --title "Select action" \
@@ -197,9 +200,7 @@ while true; do
       if [[ $(cat ${TMPFILE}) = 1 ]]; then
         sed -i 's/ON/off/g' ${INSTALLED_LIST}
       elif [[ $(cat ${TMPFILE}) = 2 ]]; then
-        for item in *.xml; do
-          FILE_LIST+=($(basename $item) "$item" off)
-        done
+        FILE_LIST=($(for item in xml/*.xml; do echo "${item} $(basename ${item}) off"; done))
         MOD_COMPILATION=$($DIALOG --keep-tite \
           --keep-window \
           --title "Select file:" \
