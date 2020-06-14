@@ -117,6 +117,7 @@ for M_DIR in $(ls -1 ${STEAM_DIR} | grep -vE "*_old_*"); do
     MOD_NAME=$(grep -h "name" "${STEAM_DIR}"/"${M_DIR}"/meta.cpp |
       awk -F'"' '{print $2}' |
       tr -d "[:punct:]" |
+#      tr [:upper:] [:lower:] |
       sed -E 's/\s{1,}/_/g')
     if [[ -n ${MOD_NAME} ]]; then true; else MOD_NAME='NO_NAME_is_DEFINED'; fi
     MOD_ID=$(grep -h "publishedid" "${STEAM_DIR}"/"${M_DIR}"/meta.cpp | awk '{print $3}' | tr -d [:punct:] | tr -d '\015')
@@ -199,7 +200,7 @@ while true; do
       if [[ $(cat ${TMPFILE}) = 1 ]]; then
         sed -i 's/ON/off/g' ${INSTALLED_LIST}
       elif [[ $(cat ${TMPFILE}) = 2 ]]; then
-        FILE_LIST=($(for item in html/*.html; do echo "${item} $(basename ${item}) off"; done))
+        FILE_LIST=($(for item in $(dirname $0)/html/*.html; do echo "${item} $(basename ${item}) off"; done))
         MOD_COMPILATION=$($DIALOG --keep-tite \
           --keep-window \
           --title "Select file:" \
