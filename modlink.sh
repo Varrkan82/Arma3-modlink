@@ -44,7 +44,7 @@ fi
 
 # Variables
 ARMASERVER_PATH=
-SELECTED_SERVER=
+SELECTED_SERVER=server_hosting
 ARMA_PATH="${ARMASERVER_PATH:-server}"
 DEF_SRV="${SELECTED_SERVER:-${ARMA_PATH}}"
 DIALOG=${DIALOG=dialog}
@@ -206,7 +206,7 @@ while true; do
           --title "Select file:" \
           --clear \
           --no-tags \
-          --radiolist "Select a file from list:" 10 50 5 \
+          --radiolist "Select a file from list:" 15 50 5 \
           "${FILE_LIST[@]}" \
           3>&1 1>&2 2>&3)
         fselectval=$?
@@ -215,6 +215,11 @@ while true; do
           sed -i 's/ON/off/g' ${INSTALLED_LIST}
           LIST=$(xmlstarlet sel -T -t -v "  html/body/div/table/tr/td/a" ${MOD_COMPILATION} | awk -F= '{  print $2 }')
           for id in ${LIST[@]}; do
+	    grep ${id} ${INSTALLED_LIST} \
+              || dialog --colors --title "\Zb\Z1Error! Not found.\Zn" \
+              --keep-window \
+              --msgbox \
+              "\Zb\Z1Error!\ZB \Z0Mod id ${id} not found on server. Download it first!\Zn" 10 50
             sed -i "s/${id} off/${id} ON/g" ${INSTALLED_LIST}
           done
           ;;
