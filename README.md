@@ -17,11 +17,11 @@ It also can add an enabled mods to the commandline parameter "mods=" in LGSM ser
 
 ``mods=""`` variable should present and to be uncommented and empty in */home/steam/server/lgsm/config-lgsm/arma3server/arma3server.cfg* file (the same thing for any other server).
 
-Before using - please update a following variables for your own:
+Before using - please update the next variables for your own:
 
-``STEAM_DIR`` - this is a path to your Steam directory with a mods.
+``STEAM_DIR`` - this is a full path to your Steam directory with a mods.
 
-``ARMASERVER_PATH`` - default server path name in your home directory. (*/home/$USER/server* by default).
+``ARMASERVER_PATH`` - default server path name in your home directory. (*server* by default for */home/$USER/server*).
 
 ``SELECTED_SERVER`` - default selected server in ``Server selection`` window (*ARMASERVER_PATH* by default).
 
