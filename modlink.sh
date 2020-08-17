@@ -51,7 +51,7 @@ DIALOG=${DIALOG=dialog}
 INSTALLED_LIST=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 trap cleanup 0 1 2 6 15
-STEAM_DIR="${HOME}"/Steam/steamapps/workshop/content/107410
+STEAM_DIR="${HOME}"/.local/share/Steam/steamapps/workshop/content/107410
 
 cleanup() {
   rm -f $TMPFILE $INSTALLED_LIST
