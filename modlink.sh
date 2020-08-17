@@ -43,9 +43,9 @@ if [[ ! -z "$1" ]]; then
 fi
 
 # Variables
-ARMASERVER_PATH=
+ARMA_SERVER_DIR=
 SELECTED_SERVER=server_hosting
-ARMA_PATH="${ARMASERVER_PATH:-server}"
+ARMA_PATH="${ARMA_SERVER_DIR:-server}"
 DEF_SRV="${SELECTED_SERVER:-${ARMA_PATH}}"
 DIALOG=${DIALOG=dialog}
 INSTALLED_LIST=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
@@ -156,72 +156,81 @@ while true; do
   modsel
 
   case $retval in
-  0)
-    mods=""
-    find "${SRV_PATH}/" -maxdepth 1 -name '@*' -type l -delete
-    find "${SRV_PATH}/keys/" -maxdepth 1 -type l -delete
-    for mod_id in ${choice_id_list[@]}; do
-      for name in $(grep ${mod_id} $INSTALLED_LIST | awk '{ print $1 }'); do
-        if [[ -z $mods ]]; then
-          mods="@${name}"
-        else
-          mods="${mods}\\\;@${name}"
-        fi
-        if [[ -d "${SRV_PATH}"/@"${name}" ]] || [[ -L "${SRV_PATH}"/@"${name}" ]]; then
-          linkkeys
-          continue
-        else
-          # Link MOD's Steam path to Server directory by its name
-          ln -s "${STEAM_DIR}"/"${mod_id}" "${SRV_PATH}"/@"${name}" 2>/dev/null
-          linkkeys
-        fi
-      done
-    done
-    find "${LGSM_CFG}" -maxdepth 1 -type f -name 'arma3server*.cfg' -exec sed -i s/^mods=.*$/mods=\"${mods}\"/g {} \;
-    clear
-    exit 0
-    ;;
-  1)
-    echo "Canceled."
-    exit 1
-    ;;
-  3)
-    $DIALOG --keep-tite \
-      --keep-window \
-      --title "Select action" \
-      --clear \
-      --no-tags \
-      --radiolist "Select action." 10 50 2 \
-      "1" "Unselect all MODs" ON \
-      "2" "Select HTML file with mod compilation" off 2>${TMPFILE}
-    value=$?
-    case $value in
     0)
-      if [[ $(cat ${TMPFILE}) = 1 ]]; then
-        sed -i 's/ON/off/g' ${INSTALLED_LIST}
-      elif [[ $(cat ${TMPFILE}) = 2 ]]; then
-        FILE_LIST=($(for item in $(dirname $0)/html/*.html; do echo "${item} $(basename ${item}) off"; done))
-        MOD_COMPILATION=$($DIALOG --keep-tite \
-          --keep-window \
-          --title "Select file:" \
-          --clear \
-          --no-tags \
-          --radiolist "Select a file from list:" 15 50 5 \
-          "${FILE_LIST[@]}" \
-          3>&1 1>&2 2>&3)
-        fselectval=$?
-        case $fselectval in
+      mods=""
+      find "${SRV_PATH}/" -maxdepth 1 -name '@*' -type l -delete
+      find "${SRV_PATH}/keys/" -maxdepth 1 -type l -delete
+      for mod_id in ${choice_id_list[@]}; do
+        for name in $(grep ${mod_id} $INSTALLED_LIST | awk '{ print $1 }'); do
+          if [[ -z $mods ]]; then
+            mods="@${name}"
+          else
+            mods="${mods}\\\;@${name}"
+          fi
+          if [[ -d "${SRV_PATH}"/@"${name}" ]] || [[ -L "${SRV_PATH}"/@"${name}" ]]; then
+            linkkeys
+            continue
+          else
+            # Link MOD's Steam path to Server directory by its name
+            ln -s "${STEAM_DIR}"/"${mod_id}" "${SRV_PATH}"/@"${name}" 2>/dev/null
+            linkkeys
+          fi
+        done
+      done
+      find "${LGSM_CFG}" -maxdepth 1 -type f -name 'arma3server*.cfg' -exec sed -i s/^mods=.*$/mods=\"${mods}\"/g {} \;
+      clear
+      exit 0
+      ;;
+    1)
+      echo "Canceled."
+      exit 1
+      ;;
+    3)
+      $DIALOG --keep-tite \
+        --keep-window \
+        --title "Select action" \
+        --clear \
+        --no-tags \
+        --radiolist "Select action." 10 50 2 \
+        "1" "Unselect all MODs" ON \
+        "2" "Select HTML file with mod compilation" off 2>${TMPFILE}
+      value=$?
+      case $value in
         0)
-          sed -i 's/ON/off/g' ${INSTALLED_LIST}
-          LIST=$(xmlstarlet sel -T -t -v "  html/body/div/table/tr/td/a" ${MOD_COMPILATION} | awk -F= '{  print $2 }')
-          for id in ${LIST[@]}; do
-	    grep ${id} ${INSTALLED_LIST} \
-              || dialog --colors --title "\Zb\Z1Error! Not found.\Zn" \
+          if [[ $(cat ${TMPFILE}) = 1 ]]; then
+            sed -i 's/ON/off/g' ${INSTALLED_LIST}
+          elif [[ $(cat ${TMPFILE}) = 2 ]]; then
+            FILE_LIST=($(for item in $(dirname $0)/html/*.html; do echo "${item} $(basename ${item}) off"; done))
+            MOD_COMPILATION=$($DIALOG --keep-tite \
               --keep-window \
-              --msgbox \
-              "\Zb\Z1Error!\ZB \Z0Mod id ${id} not found on server. Download it first!\Zn" 10 50
-            sed -i "s/${id} off/${id} ON/g" ${INSTALLED_LIST}
-          done
+              --title "Select file:" \
+              --clear \
+              --no-tags \
+              --radiolist "Select a file from list:" 15 50 5 \
+              "${FILE_LIST[@]}" \
+              3>&1 1>&2 2>&3)
+            fselectval=$?
+            case $fselectval in
+              0)
+                sed -i 's/ON/off/g' ${INSTALLED_LIST}
+                LIST=$(xmlstarlet sel -T -t -v "  html/body/div/table/tr/td/a" ${MOD_COMPILATION} | awk -F= '{  print $2 }')
+                for id in ${LIST[@]}; do
+                  grep ${id} ${INSTALLED_LIST} \
+                  || dialog --colors --title "\Zb\Z1Error! Not found.\Zn" \
+                    --keep-window \
+                    --msgbox \
+                    "\Zb\Z1Error!\ZB \Z0Mod id ${id} not found on server. Download it first!\Zn" 10 50
+                  sed -i "s/${id} off/${id} ON/g" ${INSTALLED_LIST}
+                done
+                ;;
+              1)
+                false
+                ;;
+              255)
+                false
+                ;;
+            esac
+          fi
           ;;
         1)
           false
@@ -229,20 +238,11 @@ while true; do
         255)
           false
           ;;
-        esac
-      fi
-      ;;
-    1)
-      false
+      esac
       ;;
     255)
-      false
+      echo "ESC key pressed."
+      exit 1
       ;;
-    esac
-    ;;
-  255)
-    echo "ESC key pressed."
-    exit 1
-    ;;
   esac
 done
