@@ -8,6 +8,7 @@ It also can add an enabled mods to the commandline parameter "mods=" in LGSM ser
 
 ## Dependencies
 
+* SteamCMD
 * dialog
 * xmlstarlet
 * LGSM Tool (https://linuxgsm.com/)
