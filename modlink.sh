@@ -42,11 +42,18 @@ if [[ ! -z "$1" ]]; then
   exit 99
 fi
 
-# Variables
+# User editable Variables
 ARMA_SERVER_DIR=
 SELECTED_SERVER=server_hosting
-ARMA_PATH="${ARMA_SERVER_DIR:-server}"
-DEF_SRV="${SELECTED_SERVER:-${ARMA_PATH}}"
+
+# Default variables
+ARMA_PATH="${ARMA_SERVER_DIR:=server}"
+if [[ ${ARMA_SERVER_DIR} = "serverfiles" ]]; then
+  DEF_SRV=
+  unset SELECTED_SERVER
+else
+  DEF_SRV="${SELECTED_SERVER:=${ARMA_PATH}}"
+fi
 DIALOG=${DIALOG=dialog}
 INSTALLED_LIST=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
 TMPFILE=$(tempfile 2>/dev/null) || tempfile=/tmp/test$$
@@ -55,6 +62,15 @@ STEAM_DIR="${HOME}"/Steam/steamapps/workshop/content/107410
 
 cleanup() {
   rm -f $TMPFILE $INSTALLED_LIST
+}
+
+success() {
+  if [[ $? = 0 ]]; then
+    dialog --colors --title "\Zb\Z2Information.\Zn" \
+      --keep-window \
+      --msgbox \
+      "\Zb\Z0All is fine. Exiting\Zn" 5 30
+  fi
 }
 
 SERVERS_LIST() {
@@ -69,35 +85,42 @@ SERVERS_LIST() {
   done
 }
 
-echo ${SERVER_LIST}
+# echo ${SERVER_LIST}
+if [[ ! -z ${DEF_SRV} ]]; then
+  $DIALOG --backtitle "" \
+    --keep-tite \
+    --keep-window \
+    --no-tags \
+    --title "Select Server to link MODs" --clear \
+    --radiolist "Link to... " 20 50 30 \
+    $(SERVERS_LIST) 2>$TMPFILE
 
-$DIALOG --backtitle "" \
-  --keep-tite \
-  --keep-window \
-  --no-tags \
-  --title "Select Server to link MODs" --clear \
-  --radiolist "Link to... " 20 50 30 \
-  $(SERVERS_LIST) 2>$TMPFILE
+  retval=$?
+  srv_choice=$(cat ${TMPFILE})
 
-retval=$?
-srv_choice=$(cat ${TMPFILE})
-
-case $retval in
-0)
-  DEF_SRV=$srv_choice
-  ;;
-1)
-  echo "Canceled."
-  exit 1
-  ;;
-255)
-  echo "ESC key is pressed."
-  exit 1
-  ;;
-esac
+  case $retval in
+    0)
+      DEF_SRV=$srv_choice
+    ;;
+    1)
+      echo "Canceled."
+      exit 1
+    ;;
+    255)
+      echo "ESC key is pressed."
+      exit 1
+    ;;
+  esac
+fi
 
 SRV_PATH=${HOME}/${DEF_SRV}/serverfiles
 LGSM_CFG=${HOME}/${DEF_SRV}/lgsm/config-lgsm/arma3server
+
+if [[ ! -d ${SRV_PATH} || ! -d ${LGSM_CFG} ]]; then
+  echo -e "Some directory is missing!\nCheck the correct values for variables ${!SRV_PATH@} and ${!LGSM_CFG@}"
+  echo -e "${!SRV_PATH@}=${SRV_PATH}\n${!LGSM_CFG@}=${LGSM_CFG}"
+  exit 1
+fi
 
 # Check for a "key/keys" directory in a linked MOD's directory and create symbolic links for all keys in it to a server's "keys" directory
 linkkeys() {
@@ -178,6 +201,7 @@ while true; do
         done
       done
       find "${LGSM_CFG}" -maxdepth 1 -type f -name 'arma3server*.cfg' -exec sed -i s/^mods=.*$/mods=\"${mods}\"/g {} \;
+      success
       clear
       exit 0
       ;;
