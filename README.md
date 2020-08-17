@@ -36,7 +36,7 @@ Use and arrows on your keyboard to navigate and the SPACE key to select/unselect
 
 **Added:** option to remove selection from all mods.
 
-**Added:** option to load mod compilation from HTMP file, saved from ArmA Launcher.
+**Added:** option to load mod compilation from HTML file, saved from ArmA Launcher.
 
 Use "More actions" button on a MOD selection screen.
 
