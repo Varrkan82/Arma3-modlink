@@ -66,13 +66,19 @@ cleanup() {
 
 success() {
   if [[ $? = 0 ]]; then
-    dialog --colors --title "\Zb\Z2Information.\Zn" \
+    dialog --colors --title "\Zb\Z5Information.\Zn" \
       --keep-window \
+      --ok-label "Exit" \
       --msgbox \
-      "\Zb\Z0All is fine. Exiting\Zn" 5 30
+      "\Zb\Z0Check and press \Z1Exit\Z0 button.
+
+MODs are Linked: \Zn
+
+$(ls -1 ${SRV_PATH} | egrep "^@" | sort -f)" 20 70
   fi
 }
 
+#      "\Zb\Z0All is fine. Exiting\Zn" 5 30
 SERVERS_LIST() {
   for server in ${HOME}/${ARMA_PATH}*; do
     SRV=$(echo ${server} | cut -d '/' -f 4)
