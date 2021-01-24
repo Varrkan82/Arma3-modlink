@@ -222,8 +222,8 @@ while true; do
         --clear \
         --no-tags \
         --radiolist "Select action." 10 50 2 \
-        "1" "Unselect all MODs" ON \
-        "2" "Select HTML file with mod compilation" off 2>${TMPFILE}
+        "1" "Unselect all MODs" off \
+        "2" "Select HTML file with mod compilation" ON 2>${TMPFILE}
       value=$?
       case $value in
         0)
