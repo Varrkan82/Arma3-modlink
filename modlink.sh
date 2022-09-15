@@ -44,7 +44,7 @@ fi
 
 # User editable Variables
 ARMA_SERVER_DIR=
-SELECTED_SERVER=server_hosting
+SELECTED_SERVER="${SELECTED_SERVER:-server_hosting}"
 
 # Default variables
 ARMA_PATH="${ARMA_SERVER_DIR:=server}"
@@ -194,7 +194,7 @@ while true; do
           if [[ -z $mods ]]; then
             mods="@${name}"
           else
-            mods="${mods}\\\;@${name}"
+            mods="${mods}\;@${name}"
           fi
           if [[ -d "${SRV_PATH}"/@"${name}" ]] || [[ -L "${SRV_PATH}"/@"${name}" ]]; then
             linkkeys
